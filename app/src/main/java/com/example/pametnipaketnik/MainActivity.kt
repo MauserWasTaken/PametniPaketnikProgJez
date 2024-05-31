@@ -2,12 +2,15 @@ package com.example.pametnipaketnik
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.journeyapps.barcodescanner.ScanOptions
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +49,17 @@ class MainActivity : AppCompatActivity() {
             // QR koda uspešno skenirana
             val app = application as MyApplication
             app.scanCounter++  // Povečaj števec
+
+            // Ustvari nov objekt Opened
+            val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+            val opened = Opened(openedTime = currentTime)
+
+            // Dodaj objekt Opened v seznam
+            app.OpenedList.add(opened)
+
+            Log.d("TAG", "OpenedList: ${app.OpenedList.joinToString(separator = "\n") { it.toString() }}")
+
+
             updateScanCounter()  // Posodobi TextView
             Toast.makeText(this, "Scanned: ${result.contents}\nCounter: ${app.scanCounter}", Toast.LENGTH_LONG).show()
         } else {
@@ -55,7 +69,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateScanCounter() {
-
         val app = application as MyApplication
         scanCounterTextView.text = "Scans: ${app.scanCounter}"
     }
