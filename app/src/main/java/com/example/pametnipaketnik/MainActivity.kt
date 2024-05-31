@@ -1,5 +1,6 @@
 package com.example.pametnipaketnik
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -22,13 +23,21 @@ class MainActivity : AppCompatActivity() {
 
         val app = application as MyApplication
 
-        // Poišči gumb in TextView po ID-ju
         val qrScannerButton: Button = findViewById(R.id.qrScannerButton)
+        val openedListButton: Button = findViewById(R.id.buttonList)
         scanCounterTextView = findViewById(R.id.scanCounterTextView)
 
-        // Nastavi OnClickListener za gumb
+        // Nastavi OnClickListener za gumb za skeniranje
         qrScannerButton.setOnClickListener {
             startQRScanner()
+        }
+
+        // Nastavi OnClickListener za gumb za prikaz seznama odprtih paketov
+        openedListButton.setOnClickListener {
+
+            Log.i("neki","tu esm")
+            val intent = Intent(this, OpenedListActivity::class.java)
+            startActivity(intent)
         }
 
         // Prikaži trenutni števec ob zagonu
