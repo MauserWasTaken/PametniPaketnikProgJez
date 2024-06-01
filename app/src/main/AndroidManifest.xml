@@ -2,10 +2,6 @@
     package="com.example.pametnipaketnik"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Permission to use the camera -->
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <!-- Declare camera feature -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -20,9 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PametniPaketnik"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:networkSecurityConfig="@xml/network_security_config">
 
-        <!-- Main activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -32,7 +28,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Login activity -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -44,7 +39,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Register activity -->
         <activity
             android:name=".RegisterActivity"
             android:exported="true">
@@ -56,7 +50,9 @@
             </intent-filter>
         </activity>
 
-        <!-- Opened list activity -->
         <activity android:name=".OpenedListActivity"></activity>
     </application>
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -79,20 +80,24 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun uploadImage(image: ByteArray) {
+        val userId = "some-user-id" // Replace with actual user ID if available
+
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
+            .addFormDataPart("userId", userId)
             .addFormDataPart("image", "face.png", RequestBody.create("image/png".toMediaTypeOrNull(), image))
             .build()
 
         val request = Request.Builder()
-            .url("http://your-backend-url/users/saveFaceImages")
+            .url("http://192.168.0.33:3001/users/saveFaceImages")
             .post(requestBody)
             .build()
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    Toast.makeText(this@RegisterActivity, "Failed to upload image", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RegisterActivity, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.i("tag", "Failed to upload image: ${e.message}")
                 }
             }
 
@@ -101,7 +106,8 @@ class RegisterActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         Toast.makeText(this@RegisterActivity, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this@RegisterActivity, "Failed to upload image", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@RegisterActivity, "Failed to upload image: ${response.message}", Toast.LENGTH_SHORT).show()
+                        Log.i("tag", "Failed to upload image: ${response.message}")
                     }
                 }
             }
