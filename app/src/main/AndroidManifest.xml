@@ -1,8 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.pametnipaketnik"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permission to use the camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Declare camera feature -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
-        android:name="com.example.pametnipaketnik.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -12,6 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PametniPaketnik"
         tools:targetApi="31">
+
+        <!-- Main activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -19,14 +30,33 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
 
+        <!-- Login activity -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="mypametnipaketnikapp" android:host="login" />
+            </intent-filter>
+        </activity>
+
+        <!-- Register activity -->
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="mypametnipaketnikapp" android:host="register" />
+            </intent-filter>
+        </activity>
+
+        <!-- Opened list activity -->
         <activity android:name=".OpenedListActivity"></activity>
     </application>
-
-    <uses-permission android:name="android.permission.CAMERA" />
 </manifest>
