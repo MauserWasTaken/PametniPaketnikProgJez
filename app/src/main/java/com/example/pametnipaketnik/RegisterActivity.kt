@@ -37,7 +37,12 @@ class RegisterActivity : AppCompatActivity() {
         captureButton = findViewById(R.id.captureButton)
 
         // Get the userId from intent or other source
-        userId = intent.getStringExtra("USER_ID") ?: "default_user_id"
+        userId = intent.getStringExtra("USER_ID") ?: ""
+        if (userId.isEmpty()) {
+            Toast.makeText(this, "Invalid user ID", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         captureButton.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
