@@ -25,6 +25,9 @@ class RegisterActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_CAMERA_PERMISSION = 100
+    private val IMAGE_CAPTURE_COUNT = 5 // Define how many images you want to capture
+    private var capturedImages: MutableList<Bitmap> = mutableListOf()
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,9 @@ class RegisterActivity : AppCompatActivity() {
 
         imageView = findViewById(R.id.imageView)
         captureButton = findViewById(R.id.captureButton)
+
+        // Get the userId from intent or other source
+        userId = intent.getStringExtra("USER_ID") ?: "default_user_id"
 
         captureButton.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -69,25 +75,31 @@ class RegisterActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
+            capturedImages.add(imageBitmap)
             imageView.setImageBitmap(imageBitmap)
-            val stream = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-            val byteArray = stream.toByteArray()
 
-            // Send the image to the backend
-            uploadImage(byteArray)
+            if (capturedImages.size < IMAGE_CAPTURE_COUNT) {
+                // Capture the next image
+                dispatchTakePictureIntent()
+            } else {
+                // All images captured, now upload them
+                uploadImages()
+            }
         }
     }
 
-    private fun uploadImage(image: ByteArray) {
-        val userId = "some-user-id" // Replace with actual user ID if available
+    private fun uploadImages() {
+        val requestBodyBuilder = MultipartBody.Builder().setType(MultipartBody.FORM)
+        requestBodyBuilder.addFormDataPart("userId", userId)
 
-        val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("userId", userId)
-            .addFormDataPart("image", "face.png", RequestBody.create("image/png".toMediaTypeOrNull(), image))
-            .build()
+        capturedImages.forEachIndexed { index, bitmap ->
+            val stream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            val byteArray = stream.toByteArray()
+            requestBodyBuilder.addFormDataPart("image$index", "face$index.png", RequestBody.create("image/png".toMediaTypeOrNull(), byteArray))
+        }
 
+        val requestBody = requestBodyBuilder.build()
         val request = Request.Builder()
             .url("http://192.168.0.33:3001/users/saveFaceImages")
             .post(requestBody)
@@ -96,18 +108,18 @@ class RegisterActivity : AppCompatActivity() {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
-                    Toast.makeText(this@RegisterActivity, "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
-                    Log.i("tag", "Failed to upload image: ${e.message}")
+                    Toast.makeText(this@RegisterActivity, "Failed to upload images: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Log.i("tag", "Failed to upload images: ${e.message}")
                 }
             }
 
             override fun onResponse(call: Call, response: Response) {
                 runOnUiThread {
                     if (response.isSuccessful) {
-                        Toast.makeText(this@RegisterActivity, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@RegisterActivity, "Images uploaded successfully", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this@RegisterActivity, "Failed to upload image: ${response.message}", Toast.LENGTH_SHORT).show()
-                        Log.i("tag", "Failed to upload image: ${response.message}")
+                        Toast.makeText(this@RegisterActivity, "Failed to upload images: ${response.message}", Toast.LENGTH_SHORT).show()
+                        Log.i("tag", "Failed to upload images: ${response.message}")
                     }
                 }
             }
