@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -36,8 +37,10 @@ class RegisterActivity : AppCompatActivity() {
         imageView = findViewById(R.id.imageView)
         captureButton = findViewById(R.id.captureButton)
 
-        // Get the userId from intent or other source
-        userId = intent.getStringExtra("USER_ID") ?: ""
+        // Get the userId from intent data
+        val data: Uri? = intent.data
+        userId = data?.getQueryParameter("userId") ?: ""
+        Log.d("RegisterActivity", "Received userId: $userId") // Debug statement
         if (userId.isEmpty()) {
             Toast.makeText(this, "Invalid user ID", Toast.LENGTH_SHORT).show()
             finish()
@@ -95,7 +98,8 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun uploadImages() {
         val requestBodyBuilder = MultipartBody.Builder().setType(MultipartBody.FORM)
-        requestBodyBuilder.addFormDataPart("userId", userId)
+        requestBodyBuilder.addFormDataPart("userId", userId) // Ensure userId is added here
+        Log.d("RegisterActivity", "Uploading images for userId: $userId") // Debug statement
 
         capturedImages.forEachIndexed { index, bitmap ->
             val stream = ByteArrayOutputStream()
