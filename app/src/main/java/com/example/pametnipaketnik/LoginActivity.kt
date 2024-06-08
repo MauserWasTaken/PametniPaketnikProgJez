@@ -105,7 +105,7 @@ class LoginActivity : AppCompatActivity() {
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
             val byteArray = stream.toByteArray()
-            requestBodyBuilder.addFormDataPart("image$index", "face$index.png", RequestBody.create("image/png".toMediaTypeOrNull(), byteArray))
+            requestBodyBuilder.addFormDataPart("image", "face$index.png", RequestBody.create("image/png".toMediaTypeOrNull(), byteArray))
         }
 
         val requestBody = requestBodyBuilder.build()
@@ -134,4 +134,5 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
+
 }
