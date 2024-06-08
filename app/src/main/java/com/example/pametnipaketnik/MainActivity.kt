@@ -74,8 +74,16 @@ class MainActivity : AppCompatActivity() {
 
             updateScanCounter()
 
-            val boxId = 537
+            //val boxId = 537
             val qrCodeInfo = result.contents  // Pridobimo ID paketnika iz QR kode
+
+            val parts = qrCodeInfo.split('/') // Razdelite QR kodo glede na znak '/'
+            val boxIdIndex = parts.indexOf("000537") // Indeks, kjer se nahaja ID paketnika
+
+            val boxId = parts[boxIdIndex].toInt() // ID paketnika
+
+
+
             Log.i("qrInfo", qrCodeInfo)
             Log.i("boxID", boxId.toString())
 
