@@ -69,11 +69,6 @@ class MainActivity : AppCompatActivity() {
         if (result.contents != null) {
             Log.i("neki", "tu esm3")
             val app = application as MyApplication
-            app.scanCounter++
-
-            val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-            val opened = Opened(openedTime = currentTime)
-            app.OpenedList.add(opened)
 
             Log.d("TAG", "OpenedList: ${app.OpenedList.joinToString(separator = "\n") { it.toString() }}")
 
@@ -88,6 +83,14 @@ class MainActivity : AppCompatActivity() {
 
             // Pokličemo funkcijo za odpiranje paketnika
             openBox(boxId, tokenFormat, qrCodeInfo)
+
+            app.scanCounter++
+
+            val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+            val opened = Opened(openedTime = currentTime,boxId)
+            app.OpenedList.add(opened)
+            updateScanCounter()
+
         } else {
             Toast.makeText(this, "Canceled", Toast.LENGTH_LONG).show()
         }

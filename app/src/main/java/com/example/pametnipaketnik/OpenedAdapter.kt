@@ -22,7 +22,7 @@ class OpenedAdapter(private val openedList: List<Opened>) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: OpenedViewHolder, position: Int) {
         val currentItem = openedList[position]
         holder.openedTimeTextView.text = currentItem.openedTime
-        holder.openedPackageTextView.text = currentItem.openedPackage
+        holder.openedPackageTextView.text = currentItem.openedPackage.toString()
         holder.openedLocationTextView.text = currentItem.openedLocation
     }
 
