@@ -225,8 +225,11 @@ class MainActivity : AppCompatActivity() {
             mediaPlayer.start()
 
             entryInputStream.close()
+
+            finish()
         }
 
+        finish()
     }
 
 }
