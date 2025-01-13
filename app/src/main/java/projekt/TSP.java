@@ -1,8 +1,12 @@
 package projekt;
 
+import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +81,7 @@ public class TSP {
 
     String name;
     City start;
+    Context context;
     List<City> cities = new ArrayList<>();
     int numberOfCities;
     double[][] weights;
@@ -84,7 +89,8 @@ public class TSP {
     int numberOfEvaluations, maxEvaluations;
 
 
-    public TSP(String path, int maxEvaluations) {
+    public TSP(String path, int maxEvaluations, Context context) {
+        this.context= context;
         loadData(path);
         numberOfEvaluations = 0;
         this.maxEvaluations = maxEvaluations;
@@ -118,6 +124,7 @@ public class TSP {
     }
 
     public Tour generateTour() {
+        System.out.println("numofcities: "+cities.size());
         int numberOfCities = cities.size();
         City[] path = new City[numberOfCities];
         List<City> shuffledCities = new ArrayList<>(cities);
@@ -137,10 +144,10 @@ public class TSP {
 
     private void loadData(String path) {
         // Nastavi začetno mesto (prvo mesto v seznamu)
-        FileInputStream inputStream = null;
+        InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(path);
-        } catch (FileNotFoundException e) {
+            inputStream = context.getAssets().open(path);
+        } catch (IOException e) {
             System.err.println("File " + path + " not found!");
             return;
         }
@@ -275,7 +282,9 @@ public class TSP {
             }
 
             // Now, convert the weightLines into the weight matrix (double[][])
-            numberOfCities = cities.size(); // Number of cities equals the number of coordinates
+            numberOfCities = cities.size();
+            System.out.println("numofcities length: "+numberOfCities);
+            // Number of cities equals the number of coordinates
             weights = new double[numberOfCities][numberOfCities]; // Initialize the weight matrix
 
             int rowIndex = 0; // Tracks the current row index

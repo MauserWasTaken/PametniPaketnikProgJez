@@ -22,8 +22,14 @@ class TestActivity : AppCompatActivity() {
         val coroutineScope = lifecycleScope
 
         startButton.setOnClickListener {
+            val test: AdressReader= AdressReader()
+
+//            coroutineScope.launch(Dispatchers.Default) {
+//                test.Testread(this@TestActivity)
+//            }
+
             coroutineScope.launch(Dispatchers.Default) {
-                val eilTsp = TSP("/data/local/tmp/eil101.tsp", 100000)
+                val eilTsp = TSP("realWorldProblemDistance.tsp", 1000,this@TestActivity)
                 val ga = GA(100, 0.8, 0.1) { canvasView.setTour(it) }
 
                 val bestPath = ga.execute(eilTsp)
