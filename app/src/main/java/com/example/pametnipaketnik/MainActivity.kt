@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         val qrScannerButton: Button = findViewById(R.id.qrScannerButton)
         val openedListButton: Button = findViewById(R.id.buttonList)
+        val testButton: Button = findViewById(R.id.test)
+        val realnoButton: Button = findViewById(R.id.buttonReal)
         scanCounterTextView = findViewById(R.id.scanCounterTextView)
 
         qrScannerButton.setOnClickListener {
@@ -51,6 +53,16 @@ class MainActivity : AppCompatActivity() {
         openedListButton.setOnClickListener {
             Log.i("neki", "tu esm")
             val intent = Intent(this, OpenedListActivity::class.java)
+            startActivity(intent)
+        }
+
+        testButton.setOnClickListener {
+            val intent = Intent(this, TestActivity::class.java)
+            startActivity(intent)
+        }
+
+        realnoButton.setOnClickListener {
+            val intent = Intent(this, RealnoActivity::class.java)
             startActivity(intent)
         }
 

@@ -54,6 +54,29 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".TestActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="mypametnipaketnikapp" android:host="test" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".RealnoActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="mypametnipaketnikapp" android:host="test" />
+            </intent-filter>
+        </activity>
+
+
         <activity android:name=".OpenedListActivity"></activity>
 
 

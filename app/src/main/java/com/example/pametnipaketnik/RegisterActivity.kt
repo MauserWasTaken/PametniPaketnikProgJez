@@ -110,7 +110,7 @@ class RegisterActivity : AppCompatActivity() {
 
         val requestBody = requestBodyBuilder.build()
         val request = Request.Builder()
-            .url("http://192.168.0.33:3001/users/saveFaceImages")
+            .url("http://192.168.81.167:3001/users/saveFaceImages")
             .post(requestBody)
             .build()
 
