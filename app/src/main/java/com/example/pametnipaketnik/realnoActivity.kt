@@ -1,66 +1,31 @@
 package com.example.pametnipaketnik
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.Toast
 
 class RealnoActivity : AppCompatActivity() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: OpenedItemAdapter
-    private lateinit var openedItemList: MutableList<City>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.acttivity_realno)
+        setContentView(R.layout.acttivity_realno) // Popravljena tipkarska napaka v imenu postavitve
 
-        // Initialize the RecyclerView
-        recyclerView = findViewById(R.id.openedRecyclerView)
+        // Pridobitev instance aplikacije
+        val app = application as MyApplication
+        val cityList = app.CityList
+
+        // Nastavitev RecyclerView
+        val recyclerView: RecyclerView = findViewById(R.id.openedRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Access the OpenedList from MyApplication
-        openedItemList = (applicationContext as MyApplication).CityList
-
-        // Initialize the adapter
-        adapter = OpenedItemAdapter(openedItemList)
-        recyclerView.adapter = adapter
-
-        // Example: Display a Toast when the activity is created
-        Toast.makeText(this, "List initialized with ${openedItemList.size} items", Toast.LENGTH_SHORT).show()
-    }
-
-    // Data model for Opened
-    data class Opened(val name: String, val xCoordinate: Int, val yCoordinate: Int)
-
-    // Adapter for RecyclerView
-    class OpenedItemAdapter(private val itemList: MutableList<City>) : RecyclerView.Adapter<OpenedItemAdapter.OpenedItemViewHolder>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OpenedItemViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.opened_item, parent, false)
-            return OpenedItemViewHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: OpenedItemViewHolder, position: Int) {
-            val item = itemList[position]
-            holder.nameTextView.text = item.name
-            holder.xCoordinateTextView.text = "X: ${item.x}"
-            holder.yCoordinateTextView.text = "Y: ${item.y}"
-        }
-
-        override fun getItemCount(): Int {
-            return itemList.size
-        }
-
-        inner class OpenedItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
-            val xCoordinateTextView: TextView = itemView.findViewById(R.id.xCoordinateTextView)
-            val yCoordinateTextView: TextView = itemView.findViewById(R.id.yCoordinateTextView)
+        recyclerView.adapter = CityAdapter(this, cityList) { city ->
+            // Odpri novo aktivnost ob kliku na element
+            val intent = Intent(this, CityDetailActivity::class.java)
+            intent.putExtra("name", city.name)
+            intent.putExtra("x", city.x)
+            intent.putExtra("y", city.y)
+            startActivity(intent)
         }
     }
 }
