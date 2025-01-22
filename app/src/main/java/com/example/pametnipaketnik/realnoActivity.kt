@@ -14,7 +14,7 @@ class RealnoActivity : AppCompatActivity() {
 
         // Pridobitev instance aplikacije
         val app = application as MyApplication
-        val cityList = app.CityList
+        val cityList = app.packageList
 
         // Nastavitev RecyclerView
         val recyclerView: RecyclerView = findViewById(R.id.openedRecyclerView)

@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class CityAdapter(
     private val context: Context,
-    private val cityList: List<City>,
-    private val onItemClick: (City) -> Unit // Sprejme funkcijo kot parameter
+    private val packageList: List<Package>,
+    private val onItemClick: (Package) -> Unit // Sprejme funkcijo kot parameter
     ) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
@@ -20,7 +20,7 @@ class CityAdapter(
     }
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
-        val city = cityList[position]
+        val city = packageList[position]
         holder.bind(city)
         // Nastavite klik poslušalca
         holder.itemView.setOnClickListener {
@@ -29,7 +29,7 @@ class CityAdapter(
     }
 
     override fun getItemCount(): Int {
-        return cityList.size
+        return packageList.size
     }
 
     class CityViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -37,10 +37,10 @@ class CityAdapter(
         private val xCoordinateTextView: TextView = itemView.findViewById(R.id.xCoordinateTextView)
         private val yCoordinateTextView: TextView = itemView.findViewById(R.id.yCoordinateTextView)
 
-        fun bind(city: City) {
-            nameTextView.text = city.name
-            xCoordinateTextView.text = "X: ${city.x}"
-            yCoordinateTextView.text = "Y: ${city.y}"
+        fun bind(aPackage: Package) {
+            nameTextView.text = aPackage.name
+            xCoordinateTextView.text = "X: ${aPackage.x}"
+            yCoordinateTextView.text = "Y: ${aPackage.y}"
 
         }
 
