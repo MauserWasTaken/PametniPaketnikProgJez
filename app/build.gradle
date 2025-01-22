@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.pametnipaketnik"
-        minSdk 21
+        minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -48,4 +48,5 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
+    implementation files('libs/weka-3-8-0-monolithic.jar')
 }

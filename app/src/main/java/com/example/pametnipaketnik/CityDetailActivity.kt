@@ -3,6 +3,7 @@ package com.example.pametnipaketnik
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import org.osmdroid.api.IMapController
 import org.osmdroid.config.Configuration
@@ -22,8 +23,10 @@ class CityDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_city_detail)
 
         val name = intent.getStringExtra("name")
-        val x = intent.getIntExtra("x", 0)
-        val y = intent.getIntExtra("y", 0)
+        val x = intent.getDoubleExtra("x", 0.0)
+        val y = intent.getDoubleExtra("y", 0.0)
+
+        val back: Button = findViewById(R.id.exit)
 
         Log.d("CityDetailActivity", "Name: $name, X: $x, Y: $y")
 
@@ -32,7 +35,7 @@ class CityDetailActivity : AppCompatActivity() {
         mapView.setMultiTouchControls(true)
 
         // Add marker for the city's coordinates
-        val cityLocation = GeoPoint(x.toDouble(), y.toDouble())
+        val cityLocation = GeoPoint(x, y)
         val cityMarker = Marker(mapView)
         cityMarker.position = cityLocation
         cityMarker.title = "City: $name"
@@ -51,6 +54,10 @@ class CityDetailActivity : AppCompatActivity() {
         mapController.setCenter(currentLocation)
 
 
+        back.setOnClickListener()
+        {
+            finish()
+        }
     }
 
     override fun onPause() {

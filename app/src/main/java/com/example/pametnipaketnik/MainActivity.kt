@@ -1,5 +1,6 @@
 package com.example.pametnipaketnik
 
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
@@ -19,16 +20,17 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
+import weka.core.Instances
+import weka.core.converters.ArffLoader
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 import kotlin.math.log
+import kotlin.math.pow
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,12 +64,90 @@ class MainActivity : AppCompatActivity() {
         }
 
         realnoButton.setOnClickListener {
+
+
+            val userLat = 44.0  // Replace with actual user latitude
+            val userLon = 13.0  // Replace with actual user longitude
+
+            // Get 5 closest packages
+            getFiveClosestPackages(userLat, userLon)
+
+
             val intent = Intent(this, RealnoActivity::class.java)
             startActivity(intent)
         }
 
         updateScanCounter()
     }
+
+
+    fun loadDataFromAssets(context: Context): Instances {
+        // Pridobite InputStream za .arff datoteko v assets
+        val assetManager = context.assets
+        val inputStream: InputStream = assetManager.open("suinGeneratedData.arff")
+
+        // Ustvarite ArffLoader in naložite podatke iz InputStream
+        val arffLoader = ArffLoader()
+        arffLoader.setSource(inputStream)
+        return arffLoader.getDataSet()
+    }
+
+    fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        // Haversine formula to calculate the distance between two lat/lon points
+        val earthRadius = 6371.0  // km
+
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a = Math.sin(dLat / 2).pow(2.0) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2).pow(2.0)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+        return earthRadius * c
+    }
+
+    fun getFiveClosestPackages(userLat: Double, userLon: Double) {
+        val instances = loadDataFromAssets(applicationContext)
+        val distances = mutableListOf<Pair<Double, String>>()  // Store distance and ID
+
+        for (i in 0 until instances.numInstances()) {
+            val instance = instances.instance(i)
+            val lat = instance.value(instances.attribute("Geolokacija_lat"))
+            val lon = instance.value(instances.attribute("Geolokacija_lon"))
+
+            val distance = calculateDistance(userLat, userLon, lat, lon)
+            val packageId = instance.stringValue(instances.attribute("Vrsta_paketnika"))
+
+            distances.add(Pair(distance, "$packageId,$lat,$lon"))
+        }
+
+        // Sort the distances in ascending order (closest first)
+        val sortedDistances = distances.sortedBy { it.first }
+
+        // Take the top 5 closest
+        val closestPackages = sortedDistances.take(5)
+
+        // Adding closest packages to packageList
+        val app = application as MyApplication
+        app.packageList.clear()
+        var i=0
+        closestPackages.forEach {
+            i++
+            val packageData = it.second.split(",")
+            val id = i
+            val lat = packageData[1].toDouble()
+            val lon = packageData[2].toDouble()
+            app.packageList.add(Package(id.toString(), lat, lon))  // Assuming Package class has the constructor (id, lat, lon)
+        }
+
+        // Log the result for debugging
+        closestPackages.forEach {
+            Log.i("ClosestPackage", it.second)
+        }
+    }
+
+
+
+
 
     private fun startQRScanner() {
         val options = ScanOptions()
